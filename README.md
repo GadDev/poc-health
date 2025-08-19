@@ -1,69 +1,59 @@
-# React + TypeScript + Vite
+# JSONPlaceholder Explorer (React + TS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small React/TypeScript app that lists posts from the JSONPlaceholder API, lets you view a post’s details with its comments and the author’s info, and offers a live title search (no submit button).
 
-Currently, two official plugins are available:
+## Stack & Technical Choices
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 18 + TypeScript (Vite)
+- React Router for routing
+- TanStack React Query for fetching/caching and request state
+- Tailwind CSS for quick, consistent styling
+- ESLint (enforces arrow functions) + Prettier for code quality and formatting
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Prerequisite: Node 18+
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Install dependencies: `npm install`
+- Start dev server: `npm run dev`
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Structure
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `src/App.tsx`: App shell (header/footer) and `<Outlet/>`
+- `src/main.tsx`: React entry, Router, and React Query Provider
+- `src/routes/PostsPage.tsx`: Posts list with instant search
+- `src/routes/PostDetailPage.tsx`: Post details, author, comments
+- `src/api/types.ts`: TS types (Post, Comment, User)
+- `src/api/client.ts`: Minimal API client (fetch)
+- `src/api/hooks.ts`: Typed React Query hooks
+- `tailwind.config.js`, `postcss.config.js`, `src/index.css`: styling
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Linting & Formatting
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Full lint (ESLint + Prettier check): `npm run lint`
+- Auto-fix ESLint and format: `npm run lint:fix`
+- Format only: `npm run format`
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Notable rule: `func-style: ["error", "expression"]` — prefer arrow functions for exported components, hooks, and helpers.
+
+## Key Decisions
+
+- Data fetching: React Query for caching, loading/error state, and simple component code. `staleTime` is 60s and `refetchOnWindowFocus: false` to avoid noisy refetches.
+- Basic UX: no-button search (300ms debounce), simple loading/error states, straightforward navigation.
+- Styling: Tailwind for speed and a coherent prototype.
+- Arrow functions: consistent code style enforced via ESLint; not a functional advantage here, but improves consistency.
+
+## About Title Filtering
+
+- JSONPlaceholder actually supports querystring filters (e.g., `?title_like=...`). The current implementation uses that server-side filter for search.
+- Alignment option: to strictly follow “local filtering”, switch to client-side filtering by:
+  1. Always calling `GET /posts` without parameters in `api.listPosts()`
+  2. Keeping all posts in memory (React Query cache)
+  3. Applying a front-end `filter` on `title.toLowerCase().includes(search)` (with debounce)
+
+This change is simple to implement if desired.
+
+## Possible Improvements
+
+- Stronger accessibility (labels, ARIA roles)
+- Richer error states (toasts, targeted retries)
