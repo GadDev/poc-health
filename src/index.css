@@ -1,11 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 /* Minimal base styles for typography */
 :root {
   color-scheme: light;
 }
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
