@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { usePosts } from '../api/hooks'
 
 export const PostsPage = () => {
@@ -13,8 +14,10 @@ export const PostsPage = () => {
           <div className="relative w-full">
             {data?.map((post) => (
               <div key={post.id} className="p-4 hover:bg-gray-50 border-b">
-                <h3 className="font-medium text-gray-900">{post.title}</h3>
-                <p className="text-sm text-gray-600 line-clamp-2">{post.body}</p>
+                <Link to={`/posts/${post.id}`} className="block">
+                  <h3 className="font-medium text-gray-900">{post.title}</h3>
+                  <p className="text-sm text-gray-600 line-clamp-2">{post.body}</p>
+                </Link>
               </div>
             ))}
           </div>

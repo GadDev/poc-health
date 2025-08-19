@@ -5,12 +5,23 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App'
 import { PostsPage } from './routes/PostsPage'
+import { PostDetailPage } from './routes/PostDetailPage'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    children: [{ index: true, element: <PostsPage /> }],
+    errorElement: (
+      <ErrorBoundary>
+        <div>Oops! An error occurred.</div>
+      </ErrorBoundary>
+    ),
+
+    children: [
+      { index: true, element: <PostsPage /> },
+      { path: 'posts/:id', element: <PostDetailPage /> },
+    ],
   },
 ])
 
